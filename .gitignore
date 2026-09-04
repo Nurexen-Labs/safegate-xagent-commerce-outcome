@@ -13,3 +13,5 @@ verification/sample-real-commerce-attestation.json
 
 .safegate-runtime/
 
+.vercel/
+
