@@ -206,6 +206,22 @@ module.exports = async function handler(req, res) {
       quantity: req.body?.quantity,
     });
 
+    const { createObservedCommerceProof } =
+      require("../lib/agent-commerce-proof");
+
+    const commerceProof = createObservedCommerceProof({
+      requestBinding,
+      paymentRequirements,
+      settlement: {
+        network: settlement.network,
+        transaction: settlement.transaction,
+        payer: settlement.payer || verification.payer || null,
+      },
+      consume,
+      result,
+      commerce_proof: commerceProof,
+    });
+
     return res.status(200).json({
       ok: true,
       payment: {
@@ -218,6 +234,7 @@ module.exports = async function handler(req, res) {
         status: "COMPLETED",
       },
       result,
+      commerce_proof: commerceProof,
     });
   } catch (error) {
     const code = String(error.code || "AGENT_COMMERCE_FAILED");
