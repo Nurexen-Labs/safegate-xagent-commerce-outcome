@@ -125,6 +125,34 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    const consumeStore = require("../lib/agent-consume-store");
+
+    const requestBinding = {
+      service: "premium-product-intel",
+      sku: req.body?.sku ?? null,
+      quantity: req.body?.quantity ?? null,
+    };
+
+    const replay = await consumeStore.checkPaymentReplay({
+      paymentPayload,
+      request: requestBinding,
+    });
+
+    if (replay.exists) {
+      return res.status(409).json({
+        ok: false,
+        error: {
+          code: replay.sameRequest
+            ? "ALREADY_CONSUMED"
+            : "PAYMENT_BINDING_MISMATCH",
+          message: replay.sameRequest
+            ? "This payment has already been consumed."
+            : "This payment is already bound to another request.",
+        },
+        consume: replay.record,
+      });
+    }
+
     const settlement = await settlePayment(
       paymentPayload,
       paymentRequirements
@@ -145,6 +173,31 @@ module.exports = async function handler(req, res) {
             settlement?.errorMessage ||
             "SETTLEMENT_FAILED",
         },
+      });
+    }
+
+    const consume = await consumeStore.consumePaymentOnce({
+      paymentPayload,
+      request: requestBinding,
+      settlement: {
+        network: settlement.network,
+        transaction: settlement.transaction,
+        payer: settlement.payer || verification.payer || null,
+      },
+    });
+
+    if (!consume.ok) {
+      return res.status(409).json({
+        ok: false,
+        error: {
+          code: consume.sameRequest
+            ? "ALREADY_CONSUMED"
+            : "PAYMENT_BINDING_MISMATCH",
+          message: consume.sameRequest
+            ? "This payment has already been consumed."
+            : "This payment is already bound to another request.",
+        },
+        consume: consume.record,
       });
     }
 

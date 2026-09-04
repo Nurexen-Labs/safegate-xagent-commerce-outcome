@@ -8,4 +8,4 @@ verification/sample-real-commerce-attestation.json
 *.p8
 *.p12
 *.pfx
-*private*
+*private*.safegate-runtime/

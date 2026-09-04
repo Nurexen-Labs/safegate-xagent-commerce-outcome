@@ -151,6 +151,33 @@ async function main() {
   if (paid.statusCode !== 200 || paid.body?.ok !== true) {
     process.exitCode = 1;
   }
+  // 4. Replay the exact same payment proof.
+  const replay = await invoke({
+    "x-payment": xPayment,
+  });
+
+  console.log("\n=== REPLAY RESPONSE ===");
+  console.log("HTTP:", replay.statusCode);
+  console.log(
+    JSON.stringify(
+      {
+        ok: replay.body?.ok,
+        error: replay.body?.error,
+        consume: replay.body?.consume,
+      },
+      null,
+      2
+    )
+  );
+
+  if (
+    replay.statusCode !== 409 ||
+    replay.body?.error?.code !== "ALREADY_CONSUMED"
+  ) {
+    throw new Error("Expected ALREADY_CONSUMED replay rejection.");
+  }
+
+  console.log("REPLAY_PROTECTION_PASS");
 }
 
 main().catch((error) => {
@@ -160,12 +187,3 @@ main().catch((error) => {
   );
   process.exit(1);
 });
-
-
-
-
-
-
-
-
-
