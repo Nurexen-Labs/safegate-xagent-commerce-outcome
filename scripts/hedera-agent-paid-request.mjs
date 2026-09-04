@@ -46,6 +46,32 @@ function makeResponse() {
 }
 
 async function invoke(headers = {}) {
+  const liveUrl = String(
+    process.env.SAFEGATE_AGENT_COMMERCE_URL || ""
+  ).trim();
+
+  if (liveUrl) {
+    const response = await fetch(liveUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify({
+        sku: "SG-API-001",
+        quantity: 2,
+      }),
+    });
+
+    const body = await response.json();
+
+    return {
+      statusCode: response.status,
+      headers: Object.fromEntries(response.headers.entries()),
+      body,
+    };
+  }
+
   const { out, res } = makeResponse();
 
   await agentCommerce(
@@ -188,3 +214,4 @@ main().catch((error) => {
   );
   process.exit(1);
 });
+
