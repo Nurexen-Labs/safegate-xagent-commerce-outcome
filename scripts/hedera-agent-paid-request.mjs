@@ -141,6 +141,7 @@ async function main() {
         payment: paid.body?.payment,
         execution: paid.body?.execution,
         result: paid.body?.result,
+        commerce_proof: paid.body?.commerce_proof,
         error: paid.body?.error,
       },
       null,

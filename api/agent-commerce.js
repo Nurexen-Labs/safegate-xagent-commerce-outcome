@@ -219,7 +219,6 @@ module.exports = async function handler(req, res) {
       },
       consume,
       result,
-      commerce_proof: commerceProof,
     });
 
     return res.status(200).json({
