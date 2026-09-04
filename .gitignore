@@ -1,4 +1,4 @@
-node_modules/
+﻿node_modules/
 .vercel/
 .env
 .env.*
@@ -8,4 +8,8 @@ verification/sample-real-commerce-attestation.json
 *.p8
 *.p12
 *.pfx
-*private*.safegate-runtime/
+*private*
+.safegate-runtime/
+
+.safegate-runtime/
+
