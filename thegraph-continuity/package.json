@@ -1,0 +1,15 @@
+{
+  "name": "safegate-thegraph-continuity",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SafeGate load-bearing The Graph x402 Agent0 evidence adapter for ETHOnline 2026 Continuity.",
+  "scripts": {
+    "run": "node run.mjs",
+    "check": "node run.mjs --check"
+  },
+  "dependencies": {
+    "@graphprotocol/client-x402": "latest",
+    "viem": "latest"
+  }
+}
