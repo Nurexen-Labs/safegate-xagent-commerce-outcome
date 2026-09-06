@@ -1,15 +1,25 @@
 ﻿{
-  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  "name": "SafeGate Commerce Agent",
-  "description": "Agent commerce verification on Celo: x402 payment execution plus SafeGate OBSERVED CommerceProof binding payment to the actual protected response.",
-  "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSI5NiIgZmlsbD0iIzExMTgyNyIvPjx0ZXh0IHg9IjI1NiIgeT0iMjk1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYwIiBmb250LXdlaWdodD0iNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+U0c8L3RleHQ+PC9zdmc+",
-  "services": [
-    {
-      "name": "web",
-      "endpoint": "https://github.com/Nurexen-Labs/safegate-xagent-commerce-outcome/tree/celo-agents-at-work-2026/celo-x402-demo"
-    }
-  ],
-  "x402Support": true,
-  "active": true,
-  "registrations": []
+    "type":  "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+    "name":  "SafeGate Commerce Agent",
+    "description":  "Agent commerce verification on Celo: x402 payment execution plus SafeGate OBSERVED CommerceProof binding payment to the actual protected response.",
+    "image":  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSI5NiIgZmlsbD0iIzExMTgyNyIvPjx0ZXh0IHg9IjI1NiIgeT0iMjk1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYwIiBmb250LXdlaWdodD0iNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+U0c8L3RleHQ+PC9zdmc+",
+    "services":  [
+                     {
+                         "name":  "web",
+                         "endpoint":  "https://github.com/Nurexen-Labs/safegate-xagent-commerce-outcome/tree/celo-agents-at-work-2026/celo-x402-demo"
+                     }
+                 ],
+    "x402Support":  true,
+    "active":  true,
+    "registrations":  [
+                          {
+                              "network":  "Celo Mainnet",
+                              "chainId":  42220,
+                              "caip2":  "eip155:42220",
+                              "registry":  "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+                              "agentId":  9816,
+                              "owner":  "0x9C9eF1b2F095eF3FbB1b0662326aa4B0d2bCd0F5",
+                              "registrationTx":  "0xa14dc9b3994238917b2508020b2f854a1686872ac3d7560538e2e3625a15bbd1"
+                          }
+                      ]
 }
