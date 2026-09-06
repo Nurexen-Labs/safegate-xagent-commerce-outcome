@@ -1,0 +1,52 @@
+{
+  "schema": "safegate-commerce-proof/v1",
+  "proofId": "SG-CELO-F412DC45DB3BFE34",
+  "issuedAt": "2026-09-06T00:33:53.341Z",
+  "assurance": {
+    "level": "OBSERVED",
+    "basis": "SafeGate observed the paid request and protected response after x402 facilitator verification and Celo Mainnet settlement."
+  },
+  "evidenceHash": "sha256:7d094b932f75e2bbbbad776582dcfc60756a8a69963321ed794212063b588378",
+  "evidence": {
+    "rail": "x402-celo",
+    "protocol": "x402-v1",
+    "network": {
+      "name": "Celo Mainnet",
+      "chainId": 42220,
+      "caip2": "eip155:42220",
+      "x402Network": "celo"
+    },
+    "payment": {
+      "asset": "USDC",
+      "assetContract": "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
+      "amount": "0.01",
+      "amountAtomic": "10000",
+      "payer": "0x9C9eF1b2F095eF3FbB1b0662326aa4B0d2bCd0F5",
+      "payTo": "0xEd730e2F3671fBF38C81867020521595aB01CD78",
+      "transaction": "0xf412dc45db3bfe342e25a84a82427af640f575cf7962626800167ff0577f0aa0"
+    },
+    "request": {
+      "resource": "http://localhost:3000/safegate-agent-result",
+      "scheme": "exact"
+    },
+    "settlement": {
+      "success": true,
+      "network": "celo",
+      "payer": "0x9C9eF1b2F095eF3FbB1b0662326aa4B0d2bCd0F5",
+      "transaction": "0xf412dc45db3bfe342e25a84a82427af640f575cf7962626800167ff0577f0aa0"
+    },
+    "outcome": {
+      "ok": true,
+      "service": "safegate-celo-agent-commerce",
+      "result": "PAID_AGENT_RESULT",
+      "assurance_target": "OBSERVED",
+      "settlementTx": "0xf412dc45db3bfe342e25a84a82427af640f575cf7962626800167ff0577f0aa0"
+    }
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "keyId": "sha256:9b8e01edbec0aed222576ccdadb3c75e",
+    "value": "cBjq6qaS8c29JsVsPIqWb5p/dRZ9Um63YMBwbWwXjHqEDEEvT1GGCe+j10Cs1bEi9SyjsX2b3+I9GCi8W09ACQ==",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA04dK0OIFARU633ryH1rPSgQ50LUZ8k8egmSmT8GWqz4=\n-----END PUBLIC KEY-----\n"
+  }
+}
