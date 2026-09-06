@@ -1,528 +1,285 @@
-﻿import fs from "node:fs";
-import path from "node:path";
-import crypto from "node:crypto";
-import { fileURLToPath } from "node:url";
-
-import {
-  createPublicClient,
-  formatUnits,
-  http,
-  parseAbiItem
-} from "viem";
-
-import {
-  generatePrivateKey,
-  privateKeyToAccount
-} from "viem/accounts";
-
-import { createGraphQuery } from "@graphprotocol/client-x402";
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { createPublicClient, formatUnits, http, parseAbiItem } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { createGraphQuery } from '@graphprotocol/client-x402';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const RPC = "https://sepolia.base.org";
-const USDC = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+const RPC = 'https://sepolia.base.org';
+const USDC = '0x036CbD53842c5426634e7929541eC2318f3dCF7e';
+const SUBGRAPH_ID = '3cgiGHLnVZxJC3qJGVGkQfEfbzbuBXzLW5ayBeaTHxEJ';
+const ENDPOINT = 'https://gateway.testnet.thegraph.com/api/x402/subgraphs/id/' + SUBGRAPH_ID;
+
+const GRAPHQL = '{ factories(first: 5) { id poolCount txCount totalVolumeUSD } bundles(first: 5) { id ethPriceUSD } }';
 
 const PRIVATE_KEY_PATH = process.env.SAFEGATE_THEGRAPH_PRIVATE_KEY_PATH;
 const SIGNER_PATH = process.env.SAFEGATE_THEGRAPH_SIGNER_PATH;
-const RUNTIME_DIR = process.env.SAFEGATE_THEGRAPH_RUNTIME_DIR;
 
-if (!PRIVATE_KEY_PATH || !SIGNER_PATH || !RUNTIME_DIR) {
-  throw new Error("Required local runtime paths are missing.");
-}
-
-fs.mkdirSync(path.dirname(PRIVATE_KEY_PATH), { recursive: true });
-fs.mkdirSync(path.dirname(SIGNER_PATH), { recursive: true });
-fs.mkdirSync(RUNTIME_DIR, { recursive: true });
-
-function sha256(value) {
-  return crypto.createHash("sha256")
-    .update(value, "utf8")
-    .digest("hex");
+if (!PRIVATE_KEY_PATH || !SIGNER_PATH) {
+  throw new Error('Required local secret paths are missing.');
 }
 
 function canonical(value) {
-  if (value === null || typeof value !== "object") {
-    return JSON.stringify(value);
-  }
-
-  if (Array.isArray(value)) {
-    return "[" + value.map(canonical).join(",") + "]";
-  }
-
-  return "{" +
-    Object.keys(value)
-      .sort()
-      .map((k) => JSON.stringify(k) + ":" + canonical(value[k]))
-      .join(",") +
-    "}";
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+  return '{' + Object.keys(value).sort().map(function (key) {
+    return JSON.stringify(key) + ':' + canonical(value[key]);
+  }).join(',') + '}';
 }
 
-function ensureBurner() {
-  if (!fs.existsSync(PRIVATE_KEY_PATH)) {
-    const key = generatePrivateKey();
-    fs.writeFileSync(PRIVATE_KEY_PATH, key + "\n", {
-      encoding: "utf8",
-      mode: 0o600
-    });
-  }
+function sha256(value) {
+  return crypto.createHash('sha256').update(value, 'utf8').digest('hex');
 }
 
 function ensureSigner() {
-  if (!fs.existsSync(SIGNER_PATH)) {
-    const { privateKey } = crypto.generateKeyPairSync("ed25519");
-
-    fs.writeFileSync(
-      SIGNER_PATH,
-      privateKey.export({
-        type: "pkcs8",
-        format: "pem"
-      }),
-      {
-        mode: 0o600
-      }
-    );
-  }
+  if (fs.existsSync(SIGNER_PATH)) return;
+  const pair = crypto.generateKeyPairSync('ed25519');
+  fs.writeFileSync(
+    SIGNER_PATH,
+    pair.privateKey.export({ type: 'pkcs8', format: 'pem' }),
+    { mode: 0o600 }
+  );
 }
 
-ensureBurner();
-ensureSigner();
+let privateKey = fs.readFileSync(PRIVATE_KEY_PATH, 'utf8').trim();
+if (!privateKey.startsWith('0x')) privateKey = '0x' + privateKey;
 
-let rawPrivateKey = fs.readFileSync(PRIVATE_KEY_PATH, "utf8").trim();
-
-if (!rawPrivateKey.startsWith("0x")) {
-  rawPrivateKey = "0x" + rawPrivateKey;
+if (!/^0x[0-9a-fA-F]{64}$/.test(privateKey)) {
+  throw new Error('Dedicated testnet private key format invalid.');
 }
 
-if (!/^0x[0-9a-fA-F]{64}$/.test(rawPrivateKey)) {
-  throw new Error("Local burner private key format invalid.");
-}
+const account = privateKeyToAccount(privateKey);
 
-const account = privateKeyToAccount(rawPrivateKey);
+process.env.X402_PRIVATE_KEY = privateKey;
+process.env.X402_CHAIN = 'base-sepolia';
 
-fs.writeFileSync(
-  path.join(RUNTIME_DIR, "thegraph-wallet-address.txt"),
-  account.address + "\n",
-  "utf8"
-);
-
-// The official client reads the signing key from environment.
-// It is never printed.
-process.env.X402_PRIVATE_KEY = rawPrivateKey;
-process.env.X402_CHAIN = "base-sepolia";
-
-const client = createPublicClient({
-  transport: http(RPC)
-});
+const client = createPublicClient({ transport: http(RPC) });
 
 const balanceAbi = [{
-  type: "function",
-  name: "balanceOf",
-  stateMutability: "view",
-  inputs: [{ name: "account", type: "address" }],
-  outputs: [{ name: "", type: "uint256" }]
+  type: 'function',
+  name: 'balanceOf',
+  stateMutability: 'view',
+  inputs: [{ name: 'account', type: 'address' }],
+  outputs: [{ name: '', type: 'uint256' }]
 }];
 
 const transferEvent = parseAbiItem(
-  "event Transfer(address indexed from, address indexed to, uint256 value)"
+  'event Transfer(address indexed from, address indexed to, uint256 value)'
 );
 
 async function getBalance() {
   return client.readContract({
     address: USDC,
     abi: balanceAbi,
-    functionName: "balanceOf",
+    functionName: 'balanceOf',
     args: [account.address]
   });
 }
 
-const balance = await getBalance();
+const balanceBefore = await getBalance();
 
-if (process.argv.includes("--init")) {
-  console.log("THEGRAPH_BURNER_READY");
-  console.log("WALLET:", account.address);
-  process.exit(0);
+console.log('WALLET:', account.address);
+console.log('BASE_SEPOLIA_TEST_USDC_BEFORE:', formatUnits(balanceBefore, 6));
+
+if (balanceBefore < 10000n) {
+  throw new Error('Need at least 0.01 Base Sepolia TEST USDC. No paid query sent.');
 }
 
-if (process.argv.includes("--check")) {
-  console.log("WALLET:", account.address);
-  console.log("BASE_SEPOLIA_USDC:", formatUnits(balance, 6));
+const blockBefore = await client.getBlockNumber();
 
-  // Keep a comfortable buffer for several testnet x402 queries.
-  if (balance < 10000n) {
-    console.log("TEST_USDC_REQUIRED");
-    process.exit(42);
+console.log('X402_QUERY_START');
+
+const paidQuery = createGraphQuery({
+  endpoint: ENDPOINT,
+  chain: 'base-sepolia'
+});
+
+const rawResult = await paidQuery(GRAPHQL);
+
+if (rawResult && Array.isArray(rawResult.errors) && rawResult.errors.length > 0) {
+  throw new Error('GraphQL error: ' + JSON.stringify(rawResult.errors));
+}
+
+const data = rawResult && rawResult.data ? rawResult.data : rawResult;
+const factories = Array.isArray(data && data.factories) ? data.factories : [];
+const bundles = Array.isArray(data && data.bundles) ? data.bundles : [];
+
+if (factories.length === 0) {
+  throw new Error('Paid Graph query returned no factories.');
+}
+
+const selectedFactory = factories.slice().sort(function (a, b) {
+  const av = BigInt(a.txCount || '0');
+  const bv = BigInt(b.txCount || '0');
+  if (av === bv) return 0;
+  return av > bv ? -1 : 1;
+})[0];
+
+const selectedTxCount = BigInt(selectedFactory.txCount || '0');
+const selectedPoolCount = BigInt(selectedFactory.poolCount || '0');
+const ethPriceUSD = bundles.length > 0 ? String(bundles[0].ethPriceUSD || '0') : '0';
+
+const decision =
+  selectedTxCount > 0n && selectedPoolCount > 0n
+    ? 'GRAPH_EVIDENCE_ACCEPTED'
+    : 'GRAPH_EVIDENCE_REJECTED';
+
+if (decision !== 'GRAPH_EVIDENCE_ACCEPTED') {
+  throw new Error('Live Graph data did not satisfy SafeGate evidence policy.');
+}
+
+let settlementTx = null;
+let settlementValue = 0n;
+let balanceAfter = await getBalance();
+
+for (let attempt = 0; attempt < 30; attempt += 1) {
+  const latestBlock = await client.getBlockNumber();
+
+  const logs = await client.getLogs({
+    address: USDC,
+    event: transferEvent,
+    args: { from: account.address },
+    fromBlock: blockBefore,
+    toBlock: latestBlock
+  });
+
+  if (logs.length > 0) {
+    const paymentLog = logs[logs.length - 1];
+    settlementTx = paymentLog.transactionHash;
+    settlementValue = paymentLog.args.value || 0n;
   }
 
-  console.log("TEST_USDC_READY");
-  process.exit(0);
+  balanceAfter = await getBalance();
+
+  if (settlementTx && balanceAfter < balanceBefore) break;
+
+  await new Promise(function (resolve) { setTimeout(resolve, 1500); });
 }
 
-if (balance < 10000n) {
-  console.log("TEST_USDC_REQUIRED");
-  process.exit(42);
+if (!settlementTx) {
+  throw new Error('Graph result returned but Base Sepolia USDC settlement TX was not observed.');
 }
 
-// Official Agent0/ERC-8004 deployments documented by The Graph.
-// We try Base Mainnet data first, then Base Sepolia.
-// The x402 payment itself is on Base Sepolia testnet.
-const candidates = [
-  {
-    sourceNetwork: "Base Mainnet",
-    sourceChainId: 8453,
-    subgraphId: "43s9hQRurMGjuYnC1r2ZwS6xSQktbFyXMPMqGKUFJojb"
-  },
-  {
-    sourceNetwork: "Base Sepolia",
-    sourceChainId: 84532,
-    subgraphId: "4yYAvQLFjBhBtdRCY7eUWo181VNoTSLLFd5M7FXQAi6u"
-  },
-  {
-    sourceNetwork: "Ethereum Mainnet",
-    sourceChainId: 1,
-    subgraphId: "FV6RR6y13rsnCxBAicKuQEwDp8ioEGiNaWaZUmvr1F8k"
-  }
-];
-
-const graphql = `
-query SafeGateDiscoverX402Agents {
-  agentRegistrationFiles(
-    where: {
-      x402Support: true,
-      active: true
-    }
-    first: 25
-  ) {
-    agentId
-    name
-    description
-    mcpEndpoint
-    supportedTrusts
-    x402Support
-  }
-}
-`;
-
-const beforeAll = await getBalance();
-
-let successful = null;
-const attempts = [];
-
-for (const candidate of candidates) {
-  const endpoint =
-    "https://testnet.gateway.thegraph.com/api/x402/subgraphs/id/" +
-    candidate.subgraphId;
-
-  try {
-    const blockBefore = await client.getBlockNumber();
-    const balanceBefore = await getBalance();
-
-    const paidQuery = createGraphQuery({
-      endpoint,
-      chain: "base-sepolia"
-    });
-
-    const result = await paidQuery(graphql);
-
-    if (result?.errors?.length) {
-      throw new Error(JSON.stringify(result.errors));
-    }
-
-    const data = result?.data ?? result;
-    const agents = data?.agentRegistrationFiles ?? [];
-
-    attempts.push({
-      sourceNetwork: candidate.sourceNetwork,
-      subgraphId: candidate.subgraphId,
-      agentCount: agents.length,
-      ok: true
-    });
-
-    if (!Array.isArray(agents) || agents.length === 0) {
-      continue;
-    }
-
-    let balanceAfter = await getBalance();
-    let settlementTx = null;
-    let settlementValue = 0n;
-
-    // Give the facilitator settlement a little time to appear.
-    for (let i = 0; i < 15; i++) {
-      const latest = await client.getBlockNumber();
-
-      const logs = await client.getLogs({
-        address: USDC,
-        event: transferEvent,
-        args: {
-          from: account.address
-        },
-        fromBlock: blockBefore,
-        toBlock: latest
-      });
-
-      if (logs.length > 0) {
-        const log = logs[logs.length - 1];
-        settlementTx = log.transactionHash;
-        settlementValue = log.args.value ?? 0n;
-      }
-
-      balanceAfter = await getBalance();
-
-      if (settlementTx && balanceAfter < balanceBefore) {
-        break;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-
-    if (!settlementTx) {
-      throw new Error(
-        "Paid query returned data but settlement Transfer log was not found."
-      );
-    }
-
-    // --------------------------------------------------------
-    // LOAD-BEARING DECISION
-    //
-    // The Graph response is not merely printed.
-    // SafeGate scores the discovered live agent data and selects
-    // whether an x402-capable agent is route-eligible.
-    // Without eligible live Graph data, the decision cannot PASS.
-    // --------------------------------------------------------
-
-    const scored = agents.map((agent) => {
-      const trusts = Array.isArray(agent.supportedTrusts)
-        ? agent.supportedTrusts
-        : [];
-
-      let score = 0;
-
-      if (agent.x402Support === true) score += 40;
-      if (agent.name && String(agent.name).trim()) score += 10;
-      if (agent.description && String(agent.description).trim()) score += 10;
-      if (agent.mcpEndpoint && String(agent.mcpEndpoint).trim()) score += 20;
-      score += Math.min(trusts.length * 10, 20);
-
-      return {
-        ...agent,
-        supportedTrusts: trusts,
-        safeGateScore: score
-      };
-    });
-
-    scored.sort((a, b) => {
-      if (b.safeGateScore !== a.safeGateScore) {
-        return b.safeGateScore - a.safeGateScore;
-      }
-
-      return String(a.agentId).localeCompare(String(b.agentId));
-    });
-
-    const selected = scored[0];
-
-    const decision = selected && selected.safeGateScore >= 50
-      ? "ROUTE_ELIGIBLE"
-      : "ROUTE_REJECTED";
-
-    if (decision !== "ROUTE_ELIGIBLE") {
-      throw new Error(
-        "Live Graph data returned agents, but SafeGate policy rejected them."
-      );
-    }
-
-    successful = {
-      candidate,
-      endpoint,
-      graphql,
-      result: data,
-      agents: scored,
-      selected,
-      decision,
-      blockBefore,
-      balanceBefore,
-      balanceAfter,
-      settlementTx,
-      settlementValue
-    };
-
-    break;
-  }
-  catch (error) {
-    attempts.push({
-      sourceNetwork: candidate.sourceNetwork,
-      subgraphId: candidate.subgraphId,
-      ok: false,
-      error: String(error?.message ?? error).slice(0, 500)
-    });
-  }
-}
-
-if (!successful) {
-  console.error("THEGRAPH_LIVE_QUERY_FAILED");
-  console.error(JSON.stringify(attempts, null, 2));
-  process.exit(10);
-}
-
-const {
-  candidate,
-  endpoint,
-  result,
-  agents,
-  selected,
-  decision,
-  balanceBefore,
-  balanceAfter,
-  settlementTx,
-  settlementValue
-} = successful;
+const graphResultHash = sha256(canonical(data));
+const queryHash = sha256(GRAPHQL);
 
 const evidence = {
-  schema: "safegate-thegraph-evidence/v1",
+  schema: 'safegate-thegraph-evidence/v1',
   observedAt: new Date().toISOString(),
-
   graph: {
-    provider: "The Graph",
-    product: "Agent0 ERC-8004 Subgraph",
-    sourceNetwork: candidate.sourceNetwork,
-    sourceChainId: candidate.sourceChainId,
-    subgraphId: candidate.subgraphId,
-    endpoint,
+    provider: 'The Graph',
+    product: 'Uniswap-Sepolia Subgraph',
+    indexedNetwork: 'Ethereum Sepolia',
+    subgraphId: SUBGRAPH_ID,
+    endpoint: ENDPOINT,
     liveData: true,
     loadBearing: true
   },
-
   x402: {
-    paymentNetwork: "Base Sepolia",
+    protocol: 'x402',
+    paymentNetwork: 'Base Sepolia',
     paymentChainId: 84532,
-    asset: "USDC",
+    asset: 'USDC',
     assetContract: USDC,
     payer: account.address,
     amountAtomic: settlementValue.toString(),
     amount: formatUnits(settlementValue, 6),
-    settlementTx
+    settlementTx: settlementTx
   },
-
   query: {
-    sha256: sha256(graphql),
-    responseSha256: sha256(canonical(result)),
-    returnedAgentCount: agents.length
+    querySha256: queryHash,
+    responseSha256: graphResultHash,
+    factoriesReturned: factories.length,
+    bundlesReturned: bundles.length
   },
-
+  marketEvidence: {
+    selectedFactory: selectedFactory.id,
+    poolCount: String(selectedFactory.poolCount),
+    txCount: String(selectedFactory.txCount),
+    totalVolumeUSD: String(selectedFactory.totalVolumeUSD),
+    ethPriceUSD: ethPriceUSD
+  },
   decision: {
-    policy:
-      "Select an active x402-capable ERC-8004 agent from live The Graph data. " +
-      "Require SafeGate score >= 50. No eligible Graph result means no PASS.",
-    status: decision,
-    selectedAgent: {
-      agentId: selected.agentId,
-      name: selected.name ?? null,
-      mcpEndpoint: selected.mcpEndpoint ?? null,
-      x402Support: selected.x402Support,
-      supportedTrusts: selected.supportedTrusts,
-      safeGateScore: selected.safeGateScore
-    }
+    policy: 'Require live The Graph factory evidence with poolCount > 0 and txCount > 0. Without qualifying Graph evidence SafeGate does not emit a successful proof.',
+    status: decision
   }
-};
-
-const evidenceCanonical = canonical(evidence);
-
-const payload = {
-  schema: "safegate-commerce-proof/thegraph-continuity-v1",
-  proofId: "SG-GRAPH-" + crypto.randomUUID(),
-  issuedAt: new Date().toISOString(),
-
-  assurance: {
-    level: "OBSERVED",
-    basis:
-      "SafeGate executed a paid The Graph x402 query, observed the live Agent0 " +
-      "response, used that response as a load-bearing routing decision, and " +
-      "bound the payment settlement, response hash, and decision into this proof."
-  },
-
-  evidenceHash: "sha256:" + sha256(evidenceCanonical),
-  evidence
 };
 
 ensureSigner();
 
-const privateSigner = crypto.createPrivateKey(
-  fs.readFileSync(SIGNER_PATH)
-);
+const evidenceHash = sha256(canonical(evidence));
 
-const publicSigner = crypto.createPublicKey(privateSigner);
+const payload = {
+  schema: 'safegate-commerce-proof/thegraph-continuity-v1',
+  proofId: 'SG-GRAPH-' + crypto.randomUUID(),
+  issuedAt: new Date().toISOString(),
+  assurance: {
+    level: 'OBSERVED',
+    basis: 'SafeGate executed a paid The Graph x402 query, observed the returned live indexed data, used that data as a load-bearing policy input, and bound the query result and settlement into this proof.'
+  },
+  evidenceHash: 'sha256:' + evidenceHash,
+  evidence: evidence
+};
 
-const payloadCanonical = canonical(payload);
+const signingKey = crypto.createPrivateKey(fs.readFileSync(SIGNER_PATH));
+const publicKey = crypto.createPublicKey(signingKey);
+const payloadBytes = Buffer.from(canonical(payload), 'utf8');
 
-const signature = crypto.sign(
-  null,
-  Buffer.from(payloadCanonical, "utf8"),
-  privateSigner
-);
+const signatureBytes = crypto.sign(null, payloadBytes, signingKey);
+const signatureVerified = crypto.verify(null, payloadBytes, publicKey, signatureBytes);
 
-const signatureVerify = crypto.verify(
-  null,
-  Buffer.from(payloadCanonical, "utf8"),
-  publicSigner,
-  signature
-);
-
-if (!signatureVerify) {
-  throw new Error("Ed25519 signature verification failed.");
+if (!signatureVerified) {
+  throw new Error('Ed25519 signature verification failed.');
 }
 
 const proof = {
-  payload,
+  payload: payload,
   signature: {
-    algorithm: "Ed25519",
-    value: signature.toString("base64url"),
-    publicKeyPem: publicSigner.export({
-      type: "spki",
-      format: "pem"
-    }),
+    algorithm: 'Ed25519',
+    value: signatureBytes.toString('base64url'),
+    publicKeyPem: publicKey.export({ type: 'spki', format: 'pem' }),
     verified: true
   }
 };
 
-fs.mkdirSync(path.join(__dirname, "evidence"), { recursive: true });
-fs.mkdirSync(path.join(__dirname, "proofs"), { recursive: true });
+fs.mkdirSync(path.join(__dirname, 'evidence'), { recursive: true });
+fs.mkdirSync(path.join(__dirname, 'proofs'), { recursive: true });
 
 fs.writeFileSync(
-  path.join(__dirname, "evidence", "thegraph-paid-agent-discovery.json"),
-  JSON.stringify(evidence, null, 2) + "\n",
-  "utf8"
+  path.join(__dirname, 'evidence', 'thegraph-x402-market-evidence.json'),
+  JSON.stringify(evidence, null, 2) + '\n',
+  'utf8'
 );
 
 fs.writeFileSync(
-  path.join(__dirname, "proofs", "thegraph-x402-commerce-proof.json"),
-  JSON.stringify(proof, null, 2) + "\n",
-  "utf8"
+  path.join(__dirname, 'proofs', 'thegraph-x402-commerce-proof.json'),
+  JSON.stringify(proof, null, 2) + '\n',
+  'utf8'
 );
 
-const afterAll = await getBalance();
-
-console.log("");
-console.log("===============================================");
-console.log(" SAFEGATE / THE GRAPH CONTINUITY - PASS");
-console.log("===============================================");
-console.log("GRAPH_PROVIDER: The Graph");
-console.log("GRAPH_PRODUCT: Agent0 ERC-8004 Subgraph");
-console.log("SOURCE_NETWORK:", candidate.sourceNetwork);
-console.log("SOURCE_CHAIN_ID:", candidate.sourceChainId);
-console.log("SUBGRAPH_ID:", candidate.subgraphId);
-console.log("LIVE_GRAPH_DATA: PASS");
-console.log("X402_PAYMENT_NETWORK: Base Sepolia");
-console.log("X402_ASSET: USDC");
-console.log("PAYER:", account.address);
-console.log("PAID_AMOUNT:", formatUnits(settlementValue, 6), "USDC");
-console.log("SETTLEMENT_TX:", settlementTx);
-console.log("AGENTS_RETURNED:", agents.length);
-console.log("SELECTED_AGENT_ID:", selected.agentId);
-console.log("SELECTED_AGENT:", selected.name ?? "(unnamed)");
-console.log("SAFEGATE_SCORE:", selected.safeGateScore);
-console.log("DECISION:", decision);
-console.log("ASSURANCE: OBSERVED");
-console.log("SIGNATURE_VERIFY: PASS");
-console.log("BALANCE_BEFORE:", formatUnits(beforeAll, 6));
-console.log("BALANCE_AFTER:", formatUnits(afterAll, 6));
-console.log("THEGRAPH_CONTINUITY_PASS");
-console.log("===============================================");
+console.log('');
+console.log('===============================================');
+console.log(' SAFEGATE / THE GRAPH CONTINUITY — PASS');
+console.log('===============================================');
+console.log('SUBGRAPH: Uniswap-Sepolia');
+console.log('SUBGRAPH_ID:', SUBGRAPH_ID);
+console.log('LIVE_GRAPH_DATA: PASS');
+console.log('FACTORY:', selectedFactory.id);
+console.log('POOL_COUNT:', String(selectedFactory.poolCount));
+console.log('TX_COUNT:', String(selectedFactory.txCount));
+console.log('ETH_PRICE_USD:', ethPriceUSD);
+console.log('X402_PAYMENT_NETWORK: Base Sepolia');
+console.log('X402_ASSET: TEST USDC');
+console.log('PAID_AMOUNT:', formatUnits(settlementValue, 6), 'USDC');
+console.log('SETTLEMENT_TX:', settlementTx);
+console.log('DECISION:', decision);
+console.log('ASSURANCE: OBSERVED');
+console.log('SIGNATURE_VERIFY: PASS');
+console.log('BALANCE_BEFORE:', formatUnits(balanceBefore, 6));
+console.log('BALANCE_AFTER:', formatUnits(balanceAfter, 6));
+console.log('THEGRAPH_CONTINUITY_PASS');
+console.log('===============================================');

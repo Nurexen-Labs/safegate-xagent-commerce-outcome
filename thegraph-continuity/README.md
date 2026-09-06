@@ -1,48 +1,49 @@
-# SafeGate x The Graph - ETHOnline 2026 Continuity
+# SafeGate x The Graph — ETHOnline 2026 Continuity
 
-SafeGate extends its existing agent-commerce verification layer with a load-bearing The Graph evidence adapter.
+## What SafeGate added
+
+SafeGate now uses The Graph as a load-bearing blockchain evidence source.
+
+An agent pays for a live Subgraph query through The Graph x402 Gateway using Base Sepolia test USDC.
+The returned indexed blockchain data is evaluated by a deterministic SafeGate policy.
+Only qualifying live Graph evidence can produce a successful OBSERVED CommerceProof.
 
 ## Flow
 
 SafeGate agent
 -> The Graph x402 Gateway
--> Base Sepolia test USDC pay-per-query
--> live Agent0 / ERC-8004 Subgraph data
--> deterministic SafeGate routing decision
+-> USDC pay-per-query on Base Sepolia
+-> Uniswap-Sepolia live Subgraph data
+-> SafeGate deterministic evidence policy
 -> signed OBSERVED CommerceProof
 
 ## Why The Graph is load-bearing
 
-The Graph response is used as an input to the SafeGate routing policy.
-If no eligible live x402-capable agent is returned, SafeGate does not emit a successful ROUTE_ELIGIBLE proof.
+SafeGate requires live factory evidence with poolCount > 0 and txCount > 0.
+If the paid The Graph query fails or qualifying Graph evidence is absent, SafeGate does not produce a successful proof.
 
-Evidence binds:
+## Evidence bound into CommerceProof
+
 - The Graph Subgraph ID
-- live GraphQL response hash
-- x402 settlement transaction
-- selected ERC-8004 agent
+- GraphQL query hash
+- live response hash
+- selected factory metrics
+- x402 Base Sepolia settlement transaction
 - SafeGate policy decision
 - Ed25519 signature
 
-## Network
+## Verified integration
 
-- x402 payment network: Base Sepolia
-- payment asset: testnet USDC
-- data source: The Graph Agent0 / ERC-8004 Subgraph
-- assurance: OBSERVED
+Subgraph: Uniswap-Sepolia
+Subgraph ID: 3cgiGHLnVZxJC3qJGVGkQfEfbzbuBXzLW5ayBeaTHxEJ
+x402 payment network: Base Sepolia
+Payment asset: test USDC
+Assurance: OBSERVED
 
 ## Outputs
 
-- evidence/thegraph-paid-agent-discovery.json
+- evidence/thegraph-x402-market-evidence.json
 - proofs/thegraph-x402-commerce-proof.json
 
-Successful execution prints:
-
-THEGRAPH_CONTINUITY_PASS
-LIVE_GRAPH_DATA: PASS
-DECISION: ROUTE_ELIGIBLE
-ASSURANCE: OBSERVED
-SIGNATURE_VERIFY: PASS
-
 Payment proves value moved.
-SafeGate proves what that paid execution actually resulted in.
+SafeGate proves what that paid execution actually resulted in — and tells you exactly how strong that proof is.
