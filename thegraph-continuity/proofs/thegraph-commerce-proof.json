@@ -1,0 +1,70 @@
+{
+  "payload": {
+    "schema": "safegate-commerce-proof/thegraph-continuity-v1",
+    "proofId": "SG-GRAPH-fb8a7574-4e14-43ce-928a-f4e051eb3092",
+    "issuedAt": "2026-09-06T23:28:50.974Z",
+    "assurance": {
+      "level": "OBSERVED",
+      "basis": "SafeGate executed a live Agent0 SDK search backed by The Graph's default Agent0 Subgraphs, observed and hashed the returned agent data, used it as a load-bearing routing input, and signed the resulting decision."
+    },
+    "evidenceHash": "sha256:ede0fbe28048652f9ed2942991ef642c55b32a6641deb0845c76cad9fb407f9f",
+    "evidence": {
+      "schema": "safegate-thegraph-agent-evidence/v1",
+      "observedAt": "2026-09-06T23:28:50.963Z",
+      "graph": {
+        "provider": "The Graph",
+        "product": "Agent0 / ERC-8004 Subgraphs",
+        "accessMode": "AGENT0_SDK_DEFAULT_SUBGRAPH_URLS",
+        "sdkPackage": "agent0-sdk",
+        "sdkVersion": "1.7.0",
+        "queriedChains": [
+          8453,
+          1,
+          84532
+        ],
+        "selectedChainId": 8453,
+        "selectedSubgraphId": "43s9hQRurMGjuYnC1r2ZwS6xSQktbFyXMPMqGKUFJojb",
+        "liveData": true,
+        "loadBearing": true
+      },
+      "query": {
+        "operation": "sdk.searchAgents",
+        "filters": {
+          "active": true,
+          "chains": [
+            8453,
+            1,
+            84532
+          ]
+        },
+        "responseSha256": "022ab11737960c95afcad09fdb784e68886fe7c8dcb0472b46a089f7dea5a073",
+        "activeAgentsReturned": 26120
+      },
+      "decision": {
+        "policy": "Rank live ERC-8004 agents returned through Agent0 SDK's The Graph-backed default Subgraphs. MCP endpoint, x402 support, trust models, MCP tools, and registration metadata contribute to the score. Without qualifying live Graph evidence no successful proof is emitted.",
+        "status": "AGENT_EVIDENCE_ACCEPTED",
+        "selectedAgent": {
+          "agentId": "8453:17481",
+          "chainId": 8453,
+          "name": "wacky-conspiracy-generator",
+          "description": "AI-powered conspiracy theory generator that creates the most absurd, hilarious, and wildly creative conspiracy theories about any topic. Choose a conspiracy level from mild tinfoil to full interdimensional lizard mode.",
+          "mcpEndpoint": null,
+          "supportedTrusts": [
+            "reputation",
+            "facilitator-attestation",
+            "sati-feedback"
+          ],
+          "mcpToolCount": 0,
+          "x402Support": true,
+          "safeGateScore": 50
+        }
+      }
+    }
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "value": "ftdiFzzjKlY4IXt24WYBIsym4ZrDwk7ig0wW1hou5zMvgBbTkvhKuRbZWLGQHdcp9NctfhSAYnfNW9LXA8eBAA",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA/JlEpM+ut3oa4zdcc3PMOA+gRCbTMkDJHmuF/1UKQN0=\n-----END PUBLIC KEY-----\n",
+    "verified": true
+  }
+}

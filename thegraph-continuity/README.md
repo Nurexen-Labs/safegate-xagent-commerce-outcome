@@ -1,49 +1,32 @@
-# SafeGate x The Graph — ETHOnline 2026 Continuity
+# SafeGate x The Graph â€” ETHOnline 2026 Continuity
 
-## What SafeGate added
+SafeGate now uses The Graph as a live, load-bearing agent discovery and trust-evidence source.
 
-SafeGate now uses The Graph as a load-bearing blockchain evidence source.
-
-An agent pays for a live Subgraph query through The Graph x402 Gateway using Base Sepolia test USDC.
-The returned indexed blockchain data is evaluated by a deterministic SafeGate policy.
-Only qualifying live Graph evidence can produce a successful OBSERVED CommerceProof.
+The integration uses the Agent0 SDK, whose documented default Subgraph endpoints are backed by The Graph. No Subgraph Studio browser login or user-supplied API key is required for this SDK path.
 
 ## Flow
 
-SafeGate agent
--> The Graph x402 Gateway
--> USDC pay-per-query on Base Sepolia
--> Uniswap-Sepolia live Subgraph data
--> SafeGate deterministic evidence policy
--> signed OBSERVED CommerceProof
+SafeGate -> Agent0 SDK -> The Graph-backed ERC-8004 Subgraphs -> live active agent records -> SafeGate deterministic ranking/route decision -> response hash -> signed OBSERVED CommerceProof.
 
 ## Why The Graph is load-bearing
 
-SafeGate requires live factory evidence with poolCount > 0 and txCount > 0.
-If the paid The Graph query fails or qualifying Graph evidence is absent, SafeGate does not produce a successful proof.
+SafeGate ranks live ERC-8004 agents using MCP endpoint, x402 support, supported trust models, MCP tool inventory, and registration metadata. Without qualifying live indexed agent evidence, the flow does not emit `AGENT_EVIDENCE_ACCEPTED` or a successful CommerceProof.
 
-## Evidence bound into CommerceProof
+## Networks queried
 
-- The Graph Subgraph ID
-- GraphQL query hash
-- live response hash
-- selected factory metrics
-- x402 Base Sepolia settlement transaction
-- SafeGate policy decision
-- Ed25519 signature
-
-## Verified integration
-
-Subgraph: Uniswap-Sepolia
-Subgraph ID: 3cgiGHLnVZxJC3qJGVGkQfEfbzbuBXzLW5ayBeaTHxEJ
-x402 payment network: Base Sepolia
-Payment asset: test USDC
-Assurance: OBSERVED
+- Base Mainnet
+- Ethereum Mainnet
+- Base Sepolia
 
 ## Outputs
 
-- evidence/thegraph-x402-market-evidence.json
-- proofs/thegraph-x402-commerce-proof.json
+- `evidence/thegraph-agent0-sdk-live-evidence.json`
+- `proofs/thegraph-commerce-proof.json`
 
-Payment proves value moved.
-SafeGate proves what that paid execution actually resulted in — and tells you exactly how strong that proof is.
+## Continuity
+
+SafeGate's existing payment/request binding, replay safety, outcome evidence, and CommerceProof concepts pre-date ETHOnline 2026. This Continuity feature adds The Graph-backed Agent0 discovery data as a new load-bearing evidence source.
+
+`OBSERVED` means SafeGate executed the live indexed search itself, observed and hashed the returned data, used that data in its routing decision, and signed the resulting proof.
+
+Payment proves value moved. SafeGate proves what that payment or execution actually resulted in â€” and tells you exactly how strong that proof is.

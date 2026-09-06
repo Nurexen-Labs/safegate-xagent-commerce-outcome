@@ -1,0 +1,52 @@
+{
+  "schema": "safegate-thegraph-agent-evidence/v1",
+  "observedAt": "2026-09-06T23:28:50.963Z",
+  "graph": {
+    "provider": "The Graph",
+    "product": "Agent0 / ERC-8004 Subgraphs",
+    "accessMode": "AGENT0_SDK_DEFAULT_SUBGRAPH_URLS",
+    "sdkPackage": "agent0-sdk",
+    "sdkVersion": "1.7.0",
+    "queriedChains": [
+      8453,
+      1,
+      84532
+    ],
+    "selectedChainId": 8453,
+    "selectedSubgraphId": "43s9hQRurMGjuYnC1r2ZwS6xSQktbFyXMPMqGKUFJojb",
+    "liveData": true,
+    "loadBearing": true
+  },
+  "query": {
+    "operation": "sdk.searchAgents",
+    "filters": {
+      "active": true,
+      "chains": [
+        8453,
+        1,
+        84532
+      ]
+    },
+    "responseSha256": "022ab11737960c95afcad09fdb784e68886fe7c8dcb0472b46a089f7dea5a073",
+    "activeAgentsReturned": 26120
+  },
+  "decision": {
+    "policy": "Rank live ERC-8004 agents returned through Agent0 SDK's The Graph-backed default Subgraphs. MCP endpoint, x402 support, trust models, MCP tools, and registration metadata contribute to the score. Without qualifying live Graph evidence no successful proof is emitted.",
+    "status": "AGENT_EVIDENCE_ACCEPTED",
+    "selectedAgent": {
+      "agentId": "8453:17481",
+      "chainId": 8453,
+      "name": "wacky-conspiracy-generator",
+      "description": "AI-powered conspiracy theory generator that creates the most absurd, hilarious, and wildly creative conspiracy theories about any topic. Choose a conspiracy level from mild tinfoil to full interdimensional lizard mode.",
+      "mcpEndpoint": null,
+      "supportedTrusts": [
+        "reputation",
+        "facilitator-attestation",
+        "sati-feedback"
+      ],
+      "mcpToolCount": 0,
+      "x402Support": true,
+      "safeGateScore": 50
+    }
+  }
+}
