@@ -1,4 +1,4 @@
-# SafeGate x The Graph â€” ETHOnline 2026 Continuity
+# SafeGate x The Graph - ETHOnline 2026 Continuity
 
 SafeGate now uses The Graph as a live, load-bearing agent discovery and trust-evidence source.
 
@@ -29,4 +29,4 @@ SafeGate's existing payment/request binding, replay safety, outcome evidence, an
 
 `OBSERVED` means SafeGate executed the live indexed search itself, observed and hashed the returned data, used that data in its routing decision, and signed the resulting proof.
 
-Payment proves value moved. SafeGate proves what that payment or execution actually resulted in â€” and tells you exactly how strong that proof is.
+Payment proves value moved. SafeGate proves what that payment or execution actually resulted in - and tells you exactly how strong that proof is.
