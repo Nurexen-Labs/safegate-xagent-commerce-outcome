@@ -297,7 +297,7 @@ See:
 
 ## SilentSwap integration
 
-**Status: SilentSwap Integration V1  COMPLETE**
+**Status: SilentSwap Integration V1 - COMPLETE**
 
 The current SilentSwap SDK flow is integrated with SafeGate's commerce assurance core.
 
