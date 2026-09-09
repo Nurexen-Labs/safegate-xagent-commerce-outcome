@@ -297,6 +297,21 @@ See:
 
 ## SilentSwap integration
 
+**Status: SilentSwap Integration V1  COMPLETE**
+
+The current SilentSwap SDK flow is integrated with SafeGate's commerce assurance core.
+
+Completed scope:
+
+- `@silentswap/sdk` OrderReference + OrderState bridge
+- route/payment evidence normalization
+- SafeGate request binding
+- durable replay-safe consumption
+- SafeGate Observed Middleware Core integration
+- downstream execution observation
+- route assurance: `CLAIMED`
+- outcome assurance: `OBSERVED`
+- full SafeGate regression suite: PASS
 SafeGate can compose SilentSwap route evidence with SafeGate's existing Observed Middleware Core.
 
 **Positioning**
