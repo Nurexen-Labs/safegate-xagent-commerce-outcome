@@ -20,6 +20,10 @@
                      {
                          "source":  "/v1/middleware",
                          "destination":  "/api/middleware"
+                     },
+                     {
+                         "source":  "/mcp",
+                         "destination":  "/api/mcp"
                      }
                  ]
 }
