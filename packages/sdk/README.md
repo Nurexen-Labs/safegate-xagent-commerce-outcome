@@ -1,4 +1,4 @@
-# @safegate/sdk
+# @nurexenlabs/safegate-sdk
 
 SafeGate is the assurance layer for programmable commerce.
 
@@ -22,7 +22,7 @@ Requirements:
 
 Install after the public npm release:
 
-    npm install @safegate/sdk
+    npm install @nurexenlabs/safegate-sdk
 
 During preview or pre-release testing, install the supplied SafeGate SDK tarball instead:
 
@@ -36,7 +36,7 @@ PowerShell:
 
 Run the included example:
 
-    node node_modules/@safegate/sdk/examples/verify-commerce.cjs .\commerce-attestation.json
+    node node_modules/@nurexenlabs/safegate-sdk/examples/verify-commerce.cjs .\commerce-attestation.json
 
 Expected successful result:
 
@@ -51,7 +51,7 @@ Expected successful result:
 
     const {
       SafeGateClient
-    } = require("@safegate/sdk");
+    } = require("@nurexenlabs/safegate-sdk");
 
     const fs = require("fs");
 

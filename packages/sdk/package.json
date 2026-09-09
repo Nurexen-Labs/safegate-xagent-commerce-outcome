@@ -1,5 +1,5 @@
 {
-    "name":  "@safegate/sdk",
+    "name":  "@nurexenlabs/safegate-sdk",
     "version":  "0.3.0",
     "description":  "SafeGate SDK for programmable commerce verification and agent tooling.",
     "main":  "index.js",
@@ -15,6 +15,7 @@
                   "index.js",
                   "index.d.ts",
                   "README.md",
+                  "LICENSE",
                   "examples"
               ],
     "engines":  {
@@ -36,5 +37,5 @@
     "publishConfig":  {
                           "access":  "public"
                       },
-    "license":  "UNLICENSED"
+    "license":  "Apache-2.0"
 }

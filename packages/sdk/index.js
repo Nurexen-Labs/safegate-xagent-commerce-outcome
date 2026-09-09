@@ -204,7 +204,7 @@ class SafeGateClient {
           "io.modelcontextprotocol/protocolVersion":
             MCP_PROTOCOL_VERSION,
           "io.modelcontextprotocol/clientInfo": {
-            name: "@safegate/sdk",
+            name: "@nurexenlabs/safegate-sdk",
             version: SDK_VERSION
           },
           "io.modelcontextprotocol/clientCapabilities": {}
