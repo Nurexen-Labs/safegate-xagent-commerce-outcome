@@ -1,50 +1,147 @@
 # @safegate/sdk
 
-SafeGate SDK for programmable commerce verification and agent tooling.
+SafeGate is the assurance layer for programmable commerce.
 
-SafeGate is an assurance layer for programmable commerce.
+Payment proves value moved. SafeGate verifies the evidence describing what happened next and exposes the assurance level of that evidence.
 
-Included surfaces:
+SafeGate does not:
 
-- Public Verify API
-- Middleware capability discovery
-- MCP server discovery
-- MCP tool discovery
-- MCP commerce verification
+- hold funds
+- process payments
+- provide custody
+- act as escrow
+- silently treat provider claims as independent validation
 
-SafeGate does not process payments, hold funds, or provide custody.
+## 3-minute Quickstart
 
-Install:
+Requirements:
+
+- Node.js 18.17 or newer
+- a SafeGate endpoint
+- a SafeGate commerce attestation
+
+Install after the public npm release:
 
     npm install @safegate/sdk
 
-CommonJS example:
+During preview or pre-release testing, install the supplied SafeGate SDK tarball instead:
 
-    const { SafeGateClient } = require("@safegate/sdk");
+    npm install ./safegate-sdk-0.3.0.tgz
+
+Set your SafeGate endpoint.
+
+PowerShell:
+
+    $env:SAFEGATE_BASE_URL="https://YOUR-SAFEGATE-ENDPOINT"
+
+Run the included example:
+
+    node node_modules/@safegate/sdk/examples/verify-commerce.cjs .\commerce-attestation.json
+
+Expected successful result:
+
+    SafeGate verification PASS
+    decision: PAYMENT_AND_ATTESTATION_VERIFIED
+    assurance: CLAIMED
+    commerce_verified: false
+    chain_id: 8453
+    asset: USDC
+
+## JavaScript
+
+    const {
+      SafeGateClient
+    } = require("@safegate/sdk");
+
+    const fs = require("fs");
 
     const safegate = new SafeGateClient({
-      baseUrl: "https://YOUR-SAFEGATE-ENDPOINT"
+      baseUrl: process.env.SAFEGATE_BASE_URL
     });
 
-    const result = await safegate.verifyCommerce(attestation);
+    const attestation = JSON.parse(
+      fs.readFileSync(
+        "./commerce-attestation.json",
+        "utf8"
+      )
+    );
 
-MCP example:
+    const result = await safegate.verifyCommerce(
+      attestation
+    );
 
-    const discovery = await safegate.mcpDiscover();
-    const tools = await safegate.mcpListTools();
-    const result = await safegate.mcpVerifyCommerce(attestation);
+    console.log(result.decision);
+    console.log(result.assurance.level);
+    console.log(result.commerce_verified);
+
+## Agent / MCP
+
+The same SDK can discover SafeGate's MCP server:
+
+    const discovery =
+      await safegate.mcpDiscover();
+
+    const tools =
+      await safegate.mcpListTools();
+
+And call the SafeGate verification tool:
+
+    const result =
+      await safegate.mcpVerifyCommerce(
+        attestation
+      );
 
 Current MCP protocol target:
 
     2026-07-28
 
-Current MCP tool:
+Current tool:
 
     safegate_verify_commerce
 
-Important assurance semantics:
+## Assurance semantics
 
-- CLAIMED is not independently validated.
-- OBSERVED means SafeGate observed execution evidence.
-- VALIDATED requires an independent validation mechanism.
-- Payment verification alone does not prove fulfillment.
+CLAIMED
+
+Provider-supplied fulfillment or outcome evidence has been authenticated, but SafeGate has not independently observed or validated the underlying fulfillment.
+
+OBSERVED
+
+SafeGate observed the paid request, execution, response, or equivalent execution evidence.
+
+VALIDATED
+
+An independent validation mechanism was used, such as independent re-execution, TEE evidence, zk evidence, or another configured validator.
+
+THIRD_PARTY_ATTESTED
+
+An external attestor supplied evidence under a separately identified trust mechanism.
+
+Important:
+
+Payment verification alone does not prove fulfillment.
+
+A CLAIMED result must never be presented as independently VALIDATED.
+
+`commerce_verified` is only true when the configured assurance policy threshold has actually been satisfied.
+
+## Current Base Mainnet adapter
+
+The current Base adapter can verify:
+
+- SafeGate Ed25519 commerce attestation
+- Base Mainnet chain ID 8453
+- USDC payment evidence
+- payment-to-proof binding
+
+Current fulfillment assurance ceiling:
+
+    CLAIMED
+
+## Safety
+
+The SDK requires HTTPS for non-local endpoints.
+
+No wallet private key, API secret, seed phrase, or signing secret is required for public verification calls.
+
+Do not place privileged merchant or server credentials in browser code.
