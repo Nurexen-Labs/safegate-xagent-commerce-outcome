@@ -1,8 +1,29 @@
 {
-  "version": 2,
-  "rewrites": [
-    { "source": "/health", "destination": "/api/health" },
-    { "source": "/.well-known/xagent-verification.json", "destination": "/api/xagent-verification" },
-    { "source": "/v1/commerce-outcome", "destination": "/api/commerce-outcome" }
-  ]
+    "version":  2,
+    "rewrites":  [
+                     {
+                         "source":  "/health",
+                         "destination":  "/api/health"
+                     },
+                     {
+                         "source":  "/.well-known/xagent-verification.json",
+                         "destination":  "/api/xagent-verification"
+                     },
+                     {
+                         "source":  "/v1/commerce-outcome",
+                         "destination":  "/api/commerce-outcome"
+                     },
+                     {
+                         "source":  "/v1/verify",
+                         "destination":  "/api/verify"
+                     },
+                     {
+                         "source":  "/v1/middleware",
+                         "destination":  "/api/middleware"
+                     },
+                     {
+                         "source":  "/mcp",
+                         "destination":  "/api/mcp"
+                     }
+                 ]
 }
