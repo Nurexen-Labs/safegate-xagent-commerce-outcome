@@ -2,7 +2,7 @@
 
 **The assurance layer for programmable commerce.**
 
-Payment proves value moved. SafeGate verifies the evidence describing what happened next €” and makes the strength of that evidence explicit.
+Payment proves value moved. SafeGate verifies the evidence describing what happened next — and makes the strength of that evidence explicit.
 
 SafeGate is designed for agent commerce, paid APIs, MCP tools, digital services, merchants, and platforms that need portable evidence after payment.
 
@@ -293,7 +293,8 @@ See:
 
 ---
 
-**SafeGate €” assurance infrastructure for programmable commerce.**
+**SafeGate — assurance infrastructure for programmable commerce.**
+
 ## SilentSwap integration
 
 SafeGate can compose SilentSwap route evidence with SafeGate's existing Observed Middleware Core.
