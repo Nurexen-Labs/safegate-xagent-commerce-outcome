@@ -1,0 +1,39 @@
+{
+  "name": "@safegate/sdk",
+  "version": "0.3.0",
+  "description": "SafeGate SDK for programmable commerce verification and agent tooling.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "keywords": [
+    "safegate",
+    "commerce",
+    "verification",
+    "agents",
+    "mcp",
+    "x402",
+    "usdc"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nurexen-Labs/safegate-xagent-commerce-outcome.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "UNLICENSED"
+}
