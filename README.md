@@ -328,6 +328,31 @@ SilentSwap route/payment evidence
 -> outcome observation
 -> commerce evidence
 
+### SilentSwap public SDK
+
+The SafeGate public SDK exposes the
+SilentSwap observed-commerce bridge directly:
+
+    const {
+      executeSilentSwapObservedCommerce
+    } = require("@nurexenlabs/safegate-sdk");
+
+Input is structurally compatible with the current
+`@silentswap/sdk` OrderReference + OrderState flow.
+
+    SilentSwap OrderReference + OrderState
+      -> SafeGate request binding
+      -> replay-safe consume
+      -> observed downstream execution
+      -> commerce evidence
+
+Assurance remains explicit:
+
+- route: `CLAIMED`
+- observed downstream outcome: `OBSERVED`
+- independently validated: `false`
+- custody / fund routing: `false`
+
 ### Assurance semantics
 
 SilentSwap reporting a route as completed remains provider evidence:

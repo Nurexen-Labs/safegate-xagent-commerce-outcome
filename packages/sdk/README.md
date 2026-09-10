@@ -26,7 +26,7 @@ Install after the public npm release:
 
 During preview or pre-release testing, install the supplied SafeGate SDK tarball instead:
 
-    npm install ./safegate-sdk-0.3.0.tgz
+    npm install ./safegate-sdk-0.4.0.tgz
 
 Set your SafeGate endpoint.
 
@@ -145,3 +145,46 @@ The SDK requires HTTPS for non-local endpoints.
 No wallet private key, API secret, seed phrase, or signing secret is required for public verification calls.
 
 Do not place privileged merchant or server credentials in browser code.
+
+## SilentSwap developer surface
+
+SafeGate exposes a server-side integration surface
+for the current SilentSwap SDK OrderReference +
+OrderState flow.
+
+    const {
+      executeSilentSwapObservedCommerce
+    } = require("@nurexenlabs/safegate-sdk");
+
+    const result =
+      await executeSilentSwapObservedCommerce({
+        order,
+        state,
+        requestBinding,
+        source,
+        destination,
+        consumeRouteOnce,
+        middlewareInput,
+        middlewareOptions
+      });
+
+    console.log(result.route.assurance);
+    // CLAIMED
+
+    console.log(result.outcome.assurance);
+    // OBSERVED
+
+SilentSwap protects the route.
+SafeGate proves the outcome.
+
+Trust boundary:
+
+- SilentSwap route evidence remains CLAIMED.
+- SafeGate emits OBSERVED only for execution it observed.
+- OBSERVED does not mean independent validation.
+- SafeGate does not custody or route funds.
+- SafeGate does not sign SilentSwap wallet transactions.
+
+See:
+
+    examples/silentswap-observed-commerce.cjs
