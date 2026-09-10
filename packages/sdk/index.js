@@ -1,8 +1,17 @@
 "use strict";
 
-const SDK_VERSION = "0.3.0";
+const SDK_VERSION = "0.4.0";
 const MCP_PROTOCOL_VERSION = "2026-07-28";
 const DEFAULT_TIMEOUT_MS = 15000;
+
+const {
+  SILENTSWAP_SDK_BRIDGE_SCHEMA,
+  hashSilentSwapOrderReference,
+  mapSilentSwapOrderState,
+  executeSilentSwapObservedCommerce,
+  getSilentSwapCapability
+} = require("./silentswap");
+
 
 class SafeGateError extends Error {
   constructor(code, message, options = {}) {
@@ -290,5 +299,10 @@ module.exports = {
   MCP_PROTOCOL_VERSION,
   SafeGateError,
   SafeGateClient,
-  createSafeGateClient
+  createSafeGateClient,
+  SILENTSWAP_SDK_BRIDGE_SCHEMA,
+  hashSilentSwapOrderReference,
+  mapSilentSwapOrderState,
+  executeSilentSwapObservedCommerce,
+  getSilentSwapCapability
 };

@@ -159,7 +159,7 @@ function makeResponse(status, payload) {
     timeoutMs: 5000
   });
 
-  assert.strictEqual(SDK_VERSION, "0.3.0");
+  assert.strictEqual(SDK_VERSION, "0.4.0");
 
   const verifyCapability =
     await client.getVerifyCapability();
