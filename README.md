@@ -12,11 +12,8 @@ SafeGate is designed for agent commerce, paid APIs, MCP tools, digital services,
 
 Current public release:
 
-    @nurexenlabs/safegate-sdk@0.3.0
+    @nurexenlabs/safegate-sdk@0.4.0
 
-Release tag:
-
-    sdk-v0.3.0
 
 ## Why SafeGate
 
@@ -214,7 +211,7 @@ SafeGate is designed to verify and preserve evidence about commerce outcomes ind
     verification/
       public verification artifacts
 
-## Validation completed for v0.3.0
+## Validation completed for v0.4.0
 
 The public SDK release has passed:
 
@@ -279,9 +276,9 @@ Public npm package:
 
     https://www.npmjs.com/package/@nurexenlabs/safegate-sdk
 
-SDK v0.3.0 GitHub Release:
+SilentSwap public SDK guide:
 
-    https://github.com/Nurexen-Labs/safegate-xagent-commerce-outcome/releases/tag/sdk-v0.3.0
+    docs/SILENTSWAP_PUBLIC_SDK.md
 
 ## License
 
