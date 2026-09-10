@@ -2,7 +2,7 @@
 
 **The assurance layer for programmable commerce.**
 
-Payment proves value moved. SafeGate verifies the evidence describing what happened next â€” and makes the strength of that evidence explicit.
+Payment proves value moved. SafeGate verifies the evidence describing what happened next — and makes the strength of that evidence explicit.
 
 SafeGate is designed for agent commerce, paid APIs, MCP tools, digital services, merchants, and platforms that need portable evidence after payment.
 
@@ -14,9 +14,6 @@ Current public release:
 
     @nurexenlabs/safegate-sdk@0.4.0
 
-Release tag:
-
-    sdk-v0.3.0
 
 ## Why SafeGate
 
@@ -279,9 +276,9 @@ Public npm package:
 
     https://www.npmjs.com/package/@nurexenlabs/safegate-sdk
 
-SDK v0.3.0 GitHub Release:
+SilentSwap public SDK guide:
 
-    https://github.com/Nurexen-Labs/safegate-xagent-commerce-outcome/releases/tag/sdk-v0.3.0
+    docs/SILENTSWAP_PUBLIC_SDK.md
 
 ## License
 
@@ -293,7 +290,7 @@ See:
 
 ---
 
-**SafeGate â€” assurance infrastructure for programmable commerce.**
+**SafeGate — assurance infrastructure for programmable commerce.**
 
 ## SilentSwap integration
 
