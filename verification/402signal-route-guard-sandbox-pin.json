@@ -1,0 +1,12 @@
+{
+    "schema":  "SAFEGATE_402SIGNAL_SANDBOX_PIN_V1",
+    "package":  "@402signal/route-guard",
+    "version":  "0.7.3",
+    "source":  "402SIGNAL_PUBLIC_MAIN_COMMIT",
+    "source_revision":  "58f82dec2d54c68ea91f7aa9bdf950008c2bae37",
+    "purpose":  "COORDINATED_SANDBOX_SIMULATION",
+    "simulation_only":  true,
+    "production_release":  false,
+    "replaces_stable_release_lock":  false,
+    "stable_release_lock_version":  "0.7.2"
+}
