@@ -1,5 +1,8 @@
 "use strict";
 
+async function main() {
+
+
 const assert = require("node:assert");
 const crypto = require("node:crypto");
 
@@ -373,3 +376,19 @@ console.log(
 console.log(
   "PAYMENT_SENT=NO"
 );
+}
+
+main().catch(error => {
+  console.error(
+    "TEST_FAILURE_CODE=" +
+    String(error && error.code ? error.code : "UNHANDLED_ERROR")
+  );
+
+  console.error(
+    error && error.stack
+      ? error.stack
+      : String(error)
+  );
+
+  process.exitCode = 1;
+});
