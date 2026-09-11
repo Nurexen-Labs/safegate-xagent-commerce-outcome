@@ -1,0 +1,12 @@
+{
+  "schema": "SAFEGATE_402SIGNAL_SUPPLY_CHAIN_LOCK_V1",
+  "package": "@402signal/route-guard",
+  "version": "0.7.2",
+  "release_tag": "route-guard-v0.7.2",
+  "release_commit": "fdbcff3bc9b31826567b8cb456d4a883009eb9ff",
+  "artifact": "402signal-route-guard-0.7.2.tgz",
+  "sha256": "f23d534537a847d592770aea2bbdbbce493f668645d6dcf95985b21d2a70195a",
+  "source": "GITHUB_RELEASE",
+  "node_min_major": 22,
+  "runtime_dependencies": 0
+}
