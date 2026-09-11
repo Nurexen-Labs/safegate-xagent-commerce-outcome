@@ -527,7 +527,9 @@ async function main() {
       intentId
     );
 
-    corrupt.close();
+    if (typeof corrupt.close === "function") {
+      corrupt.close();
+    }
     rawDb.close();
 
 

@@ -120,6 +120,38 @@ assert.match(
   /^[a-f0-9]{64}$/
 );
 
+assert.equal(
+  evidence.provenance.source_mode,
+  "SYNTHETIC"
+);
+
+assert.throws(
+  () =>
+    create402SignalPrePaymentEvidence({
+      verifiedAction: validAction,
+      routeRequestJson,
+      routeResponseJson,
+      sourceMode: "PRODUCTION"
+    }),
+  error =>
+    error &&
+    error.code ===
+      "CALLER_PRODUCTION_SOURCE_MODE_FORBIDDEN"
+);
+
+assert.throws(
+  () =>
+    create402SignalPrePaymentEvidence({
+      verifiedAction: validAction,
+      routeRequestJson,
+      routeResponseJson,
+      sourceMode: "production"
+    }),
+  error =>
+    error &&
+    error.code ===
+      "CALLER_PRODUCTION_SOURCE_MODE_FORBIDDEN"
+);
 assert.throws(
   () =>
     create402SignalPrePaymentEvidence({
