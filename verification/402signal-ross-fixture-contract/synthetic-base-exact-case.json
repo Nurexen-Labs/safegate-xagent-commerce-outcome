@@ -1,0 +1,50 @@
+{
+  "schema": "SAFEGATE_402SIGNAL_SYNTHETIC_BASE_EXACT_CASE_V1",
+  "version": "1.0.0",
+  "requestId": "SG-EVM-REQ-402SIGNAL-0120",
+  "nowEpochSeconds": 1789159000,
+  "verifiedAction": {
+    "model": "proof_carrying_route_v1",
+    "request": {
+      "url": "https://merchant.example/paid-agent-tool",
+      "method": "POST",
+      "body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "accepted": {
+      "scheme": "exact",
+      "network": "eip155:8453",
+      "amount": "1000",
+      "asset": "USDC",
+      "payTo": "0x1111111111111111111111111111111111111111"
+    },
+    "expires_at": 1789159120,
+    "quote_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "routeRequestJson": "{\"need\":\"paid-agent-tool\",\"require_route_binding\":true}",
+  "routeResponseJson": "{\"synthetic\":true,\"selected\":true}",
+  "paymentVerification": {
+    "payment_status": "PAYMENT_VERIFIED",
+    "request_id": "SG-EVM-REQ-402SIGNAL-0120",
+    "transaction_hash": "0xabababababababababababababababababababababababababababababababab",
+    "chain_id": 8453,
+    "network": "eip155:8453",
+    "asset": "USDC",
+    "amount_base_units": "1000",
+    "recipient": "0x1111111111111111111111111111111111111111"
+  },
+  "commerceRequest": {
+    "requestId": "SG-EVM-REQ-402SIGNAL-0120",
+    "method": "POST",
+    "path": "/paid-agent-tool",
+    "body": {
+      "query": "synthetic"
+    }
+  },
+  "executionResult": {
+    "statusCode": 200,
+    "body": {
+      "ok": true,
+      "result": "synthetic-result"
+    }
+  }
+}
