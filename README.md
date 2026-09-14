@@ -266,6 +266,19 @@ Next:
 
 SafeGate's partner strategy is to sit above payment rails, not replace them.
 
+## Engineering ledger
+
+SafeGate treats GitHub as its public engineering ledger and technical showcase.
+
+Completed engineering milestones should leave an auditable GitHub trail:
+
+- scoped branch and commit
+- pull request where appropriate
+- release or tag for versioned public artifacts
+- documentation and evidence updates
+- explicit validation and test results
+
+For SafeGate, `DONE` means the engineering work is implemented, tested, and documented visibly enough that an external reviewer can reconstruct what changed without relying on private context.
 ## Links
 
 Website:
