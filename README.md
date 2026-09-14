@@ -2,7 +2,7 @@
 
 **The assurance layer for programmable commerce.**
 
-Payment proves value moved. SafeGate verifies the evidence describing what happened next — and makes the strength of that evidence explicit.
+Payment proves value moved. SafeGate verifies the evidence describing what happened next â€” and makes the strength of that evidence explicit.
 
 SafeGate is designed for agent commerce, paid APIs, MCP tools, digital services, merchants, and platforms that need portable evidence after payment.
 
@@ -266,6 +266,19 @@ Next:
 
 SafeGate's partner strategy is to sit above payment rails, not replace them.
 
+## Engineering ledger
+
+SafeGate treats GitHub as its public engineering ledger and technical showcase.
+
+Completed engineering milestones should leave an auditable GitHub trail:
+
+- scoped branch and commit
+- pull request where appropriate
+- release or tag for versioned public artifacts
+- documentation and evidence updates
+- explicit validation and test results
+
+For SafeGate, `DONE` means the engineering work is implemented, tested, and documented visibly enough that an external reviewer can reconstruct what changed without relying on private context.
 ## Links
 
 Website:
@@ -290,7 +303,7 @@ See:
 
 ---
 
-**SafeGate — assurance infrastructure for programmable commerce.**
+**SafeGate â€” assurance infrastructure for programmable commerce.**
 
 ## SilentSwap integration
 
