@@ -1,15 +1,24 @@
 -- SafeGate Colosseum 2026
--- Durable consume-once store for hosted agent commerce.
+-- Durable consume-once store for hosted Base agent commerce.
 --
 -- IMPORTANT:
--- This file is only a migration artifact in Git.
--- Committing it does NOT mutate production.
+-- Migration artifact only.
+-- Committing this file does NOT mutate production.
 --
--- Security model:
--- - no wallet/private-key material is stored
--- - no payment authorization capability is stored
--- - service_role-only RPC execution
--- - unique constraints enforce durable single-consume
+-- Stored:
+-- - consume key
+-- - request ID
+-- - request hash
+-- - Base chain ID
+-- - transaction hash
+--
+-- Not stored:
+-- - wallet credentials
+-- - private keys
+-- - seed phrases
+-- - payment authorization
+-- - request bodies
+-- - service-role credentials
 
 begin;
 
@@ -24,11 +33,14 @@ create table if not exists public.safegate_colosseum_consumes (
     constraint safegate_colosseum_consume_key_format
         check (consume_key ~ '^[a-f0-9]{64}$'),
 
+    constraint safegate_colosseum_request_id_format
+        check (request_id ~ '^SG-EVM-REQ-[A-Z0-9-]{12,80}$'),
+
     constraint safegate_colosseum_request_hash_format
         check (request_hash ~ '^[a-f0-9]{64}$'),
 
-    constraint safegate_colosseum_chain_id_positive
-        check (chain_id > 0),
+    constraint safegate_colosseum_base_chain_only
+        check (chain_id = 8453),
 
     constraint safegate_colosseum_tx_hash_format
         check (transaction_hash ~ '^0x[a-f0-9]{64}$'),
@@ -42,7 +54,7 @@ alter table public.safegate_colosseum_consumes
 
 revoke all
     on table public.safegate_colosseum_consumes
-    from anon, authenticated;
+    from public, anon, authenticated;
 
 create or replace function public.safegate_colosseum_consume_once(
     p_consume_key text,

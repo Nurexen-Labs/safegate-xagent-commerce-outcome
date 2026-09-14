@@ -182,6 +182,52 @@ async function main() {
     "DURABLE_CONSUME_STORE_UNAVAILABLE"
   );
 
+  let wrongChainCode = null;
+
+  try {
+    await consumeOnce({
+      consumeKey: CONSUME_KEY,
+      requestId: "SG-EVM-REQ-COLOSSEUM-DURABLE-0001",
+      requestHash: REQUEST_HASH,
+      chainId: 1,
+      transactionHash: TX_HASH
+    });
+  } catch (error) {
+    wrongChainCode = error && error.code;
+  }
+
+  assert.equal(
+    wrongChainCode,
+    "UNSUPPORTED_COLOSSEUM_STORE_CHAIN"
+  );
+
+  let invalidRequestCode = null;
+
+  try {
+    await consumeOnce({
+      consumeKey: CONSUME_KEY,
+      requestId: "INVALID",
+      requestHash: REQUEST_HASH,
+      chainId: 8453,
+      transactionHash: TX_HASH
+    });
+  } catch (error) {
+    invalidRequestCode = error && error.code;
+  }
+
+  assert.equal(
+    invalidRequestCode,
+    "REQUEST_ID_REQUIRED"
+  );
+
+  console.log(
+    "COLOSSEUM_SUPABASE_BASE_ONLY=PASS"
+  );
+
+  console.log(
+    "COLOSSEUM_SUPABASE_REQUEST_ID_BOUNDARY=PASS"
+  );
+
   console.log(
     "COLOSSEUM_SUPABASE_CONSUME_STORE_TEST=PASS"
   );
