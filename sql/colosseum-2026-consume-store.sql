@@ -1,9 +1,10 @@
 -- SafeGate Colosseum 2026
 -- Durable consume-once store for hosted Base agent commerce.
 --
--- IMPORTANT:
--- Migration artifact only.
--- Committing this file does NOT mutate production.
+-- FORWARD MIGRATION
+--
+-- This file is intentionally one-time and fail-closed.
+-- It must not silently replace an existing production table or RPC.
 --
 -- Stored:
 -- - consume key
@@ -22,7 +23,25 @@
 
 begin;
 
-create table if not exists public.safegate_colosseum_consumes (
+do $$
+begin
+    if to_regclass(
+        'public.safegate_colosseum_consumes'
+    ) is not null then
+        raise exception
+            'SAFEGATE_COLOSSEUM_TABLE_ALREADY_EXISTS';
+    end if;
+
+    if to_regprocedure(
+        'public.safegate_colosseum_consume_once(text,text,text,bigint,text)'
+    ) is not null then
+        raise exception
+            'SAFEGATE_COLOSSEUM_RPC_ALREADY_EXISTS';
+    end if;
+end;
+$$;
+
+create table public.safegate_colosseum_consumes (
     consume_key text primary key,
     request_id text not null,
     request_hash text not null,
@@ -56,7 +75,11 @@ revoke all
     on table public.safegate_colosseum_consumes
     from public, anon, authenticated;
 
-create or replace function public.safegate_colosseum_consume_once(
+grant insert
+    on table public.safegate_colosseum_consumes
+    to service_role;
+
+create function public.safegate_colosseum_consume_once(
     p_consume_key text,
     p_request_id text,
     p_request_hash text,
