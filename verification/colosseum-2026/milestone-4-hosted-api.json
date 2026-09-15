@@ -1,0 +1,34 @@
+{
+    "schema":  "SAFEGATE_COLOSSEUM_MILESTONE_V1",
+    "milestone":  "hosted-agent-commerce-api",
+    "status":  "PASS",
+    "branch":  "feature/colosseum-2026-base-agent-commerce",
+    "base_commit":  "4471764f681a991550fcfb275b7859617eaf4722",
+    "verified_at":  "2026-09-15T00:36:07.6522869Z",
+    "scope":  [
+                  "durable payment intent create",
+                  "intent-bound Base USDC verification",
+                  "durable payment consume once",
+                  "registered service execution",
+                  "OBSERVED outcome evidence",
+                  "Ed25519 signed CommerceProof",
+                  "same-payment replay rejection",
+                  "caller assurance elevation rejection"
+              ],
+    "routes":  [
+                   "/v1/agent-commerce/intents",
+                   "/v1/agent-commerce/execute"
+               ],
+    "assurance":  {
+                      "level":  "OBSERVED",
+                      "independently_validated":  false,
+                      "commerce_verified":  false
+                  },
+    "side_effects":  {
+                         "production_deploy":  false,
+                         "env_change":  false,
+                         "wallet_action":  false,
+                         "payment_sent":  false,
+                         "mainnet_transaction":  false
+                     }
+}
