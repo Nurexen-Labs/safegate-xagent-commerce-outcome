@@ -199,6 +199,8 @@ async function main() {
             expected.transactionHash,
           block_number:
             24681012,
+          block_timestamp:
+            "2026-09-15T00:05:00.000Z",
           payment_sender:
             expected.paymentSender,
           merchant_receiver:

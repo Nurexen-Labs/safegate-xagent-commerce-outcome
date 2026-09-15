@@ -88,6 +88,7 @@ async function main() {
               token_contract: BASE_USDC,
               transaction_hash: TX_HASH,
               block_number: 12345678,
+              block_timestamp: "2026-09-15T00:05:00.000Z",
               payment_sender: SENDER,
               merchant_receiver: RECEIVER,
               amount_base_units: "100000"
@@ -199,6 +200,7 @@ async function main() {
             token_contract: BASE_USDC,
             transaction_hash: TX_HASH,
             block_number: 123,
+            block_timestamp: "2026-09-15T00:05:00.000Z",
             payment_sender: SENDER,
             merchant_receiver: RECEIVER,
             amount_base_units: "99999"
@@ -235,6 +237,7 @@ async function main() {
             token_contract: BASE_USDC,
             transaction_hash: TX_HASH,
             block_number: 123,
+            block_timestamp: "2026-09-15T00:05:00.000Z",
             payment_sender: SENDER,
             merchant_receiver:
               "0x" + "44".repeat(20),
@@ -252,6 +255,41 @@ async function main() {
     "PAYMENT_INTENT_RECEIVER_MISMATCH"
   );
 
+  let predatesIntent = null;
+
+  try {
+    await verifyIntentBoundBasePayment(
+      {
+        intent,
+        request: request(),
+        transactionHash: TX_HASH
+      },
+      {
+        now: () => "2026-09-15T00:05:00.000Z",
+        verifyTransfer: async () => ({
+          payment_status: "PAYMENT_VERIFIED",
+          chain_id: 8453,
+          asset: "USDC",
+          token_contract: BASE_USDC,
+          transaction_hash: TX_HASH,
+          block_number: 12345677,
+          block_timestamp: "2026-09-14T23:59:59.000Z",
+          payment_sender: SENDER,
+          merchant_receiver: RECEIVER,
+          amount_base_units: "100000"
+        })
+      }
+    );
+  } catch (error) {
+    predatesIntent = error && error.code;
+  }
+
+  assert.equal(
+    predatesIntent,
+    "PAYMENT_INTENT_PAYMENT_PREDATES_INTENT"
+  );
+
+  console.log("PAYMENT_CHRONOLOGY_GUARD=PASS");
   console.log("COLOSSEUM_PAYMENT_INTENT_TEST=PASS");
   console.log("REQUEST_HASH_BINDING=PASS");
   console.log("EXACT_PAYMENT_ECONOMICS=PASS");
