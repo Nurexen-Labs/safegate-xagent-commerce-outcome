@@ -1,0 +1,59 @@
+{
+  "schema": "SAFEGATE_402SIGNAL_ROSS_FIXTURE_SHAPE_V1",
+  "version": "1.0.0",
+  "status": "SANDBOX_INTEROPERABILITY_SCHEMA_HANDSHAKE",
+  "provider": "402Signal",
+  "stable_release_lock": {
+    "package": "@402signal/route-guard",
+    "version": "0.7.2",
+    "release_tag": "route-guard-v0.7.2",
+    "release_commit": "fdbcff3bc9b31826567b8cb456d4a883009eb9ff",
+    "artifact": "402signal-route-guard-0.7.2.tgz",
+    "sha256": "f23d534537a847d592770aea2bbdbbce493f668645d6dcf95985b21d2a70195a"
+  },
+  "pin_policy": {
+    "sandbox": "PRESERVE_EXISTING_SANDBOX_PIN",
+    "stable_release_lock": "PRESERVE_SEPARATELY",
+    "public_main": "DO_NOT_AUTO_FOLLOW"
+  },
+  "required_fixture_fields": [
+    "requestId",
+    "nowEpochSeconds",
+    "verifiedAction",
+    "routeRequestJson",
+    "routeResponseJson",
+    "paymentVerification",
+    "commerceRequest",
+    "executionResult"
+  ],
+  "verifiedAction_required_fields": [
+    "model",
+    "request.url",
+    "request.method",
+    "request.body_sha256",
+    "accepted.scheme",
+    "accepted.network",
+    "accepted.amount",
+    "accepted.asset",
+    "accepted.payTo",
+    "expires_at",
+    "quote_sha256"
+  ],
+  "pipeline": [
+    "402Signal verifiedAction",
+    "SafeGate prepayment evidence",
+    "SafeGate request binding",
+    "SafeGate payment expectation",
+    "SafeGate economic payment binding",
+    "SafeGate observed commerce lifecycle",
+    "SafeGate signed CommerceProof V2"
+  ],
+  "security_semantics": {
+    "payment_proof_is_not_commerce_proof": true,
+    "caller_assurance_elevation_forbidden": true,
+    "caller_production_source_mode_forbidden": true,
+    "synthetic_commerce_verified": false,
+    "wallet_required": false,
+    "funds_required": false
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "SAFEGATE_402SIGNAL_EXPECTED_OUTPUT_V1",
+  "version": "1.0.0",
+  "prepayment": {
+    "schema": "SAFEGATE_402SIGNAL_PREPAYMENT_EVIDENCE_V1",
+    "stage": "PRE_PAYMENT",
+    "decision": "ALLOW",
+    "provider": "402Signal",
+    "assurance": "THIRD_PARTY_ATTESTED",
+    "source_mode": "SYNTHETIC",
+    "request_binding_status": "BOUND"
+  },
+  "payment_expectation": {
+    "schema": "SAFEGATE_402SIGNAL_PAYMENT_EXPECTATION_V1",
+    "request_id": "SG-EVM-REQ-402SIGNAL-0120",
+    "network": "eip155:8453",
+    "asset": "USDC",
+    "amount_base_units": "1000",
+    "recipient": "0x1111111111111111111111111111111111111111"
+  },
+  "payment_binding": {
+    "ok": true,
+    "binding_status": "MATCHED"
+  },
+  "lifecycle": {
+    "schema": "SAFEGATE_402SIGNAL_COMMERCE_LIFECYCLE_V1",
+    "pre_payment_assurance": "THIRD_PARTY_ATTESTED",
+    "payment_status": "PAYMENT_VERIFIED",
+    "request_binding": "VALID",
+    "replay_status": "CONSUMED",
+    "post_payment_assurance": "OBSERVED",
+    "payment_bound": true,
+    "outcome_observed": true,
+    "commerce_verified": false
+  },
+  "signed_commerce_proof": {
+    "envelope_schema": "SAFEGATE_SIGNED_COMMERCE_PROOF_V2",
+    "payload_schema": "SAFEGATE_COMMERCE_PROOF_V2",
+    "verification_ok": true,
+    "production_evidence": false,
+    "commerce_verified": false
+  }
+}
