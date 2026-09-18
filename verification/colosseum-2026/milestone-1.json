@@ -1,0 +1,33 @@
+{
+    "schema":  "SAFEGATE_COLOSSEUM_VERIFICATION_V1",
+    "milestone":  "BASE_AGENT_COMMERCE_ORCHESTRATOR",
+    "branch":  "feature/colosseum-2026-base-agent-commerce",
+    "parent_commit":  "011d578a437fcb5d799c152f3ef13522cc839ac7",
+    "chain":  {
+                  "name":  "Base",
+                  "chain_id":  8453,
+                  "asset":  "USDC"
+              },
+    "implementation":  {
+                           "core_rewrite":  false,
+                           "new_mainnet_payment":  false,
+                           "wallet_used":  false,
+                           "custody":  false
+                       },
+    "acceptance":  {
+                       "happy_path":  "PASS",
+                       "request_binding_mismatch":  "PASS",
+                       "replay_protection":  "PASS",
+                       "assurance_elevation_rejected":  "PASS",
+                       "payment_mutation_rejected":  "PASS",
+                       "execution_failure_evidence":  "PASS",
+                       "signed_commerce_proof":  "PASS",
+                       "full_regression":  "PASS"
+                   },
+    "assurance":  {
+                      "level":  "OBSERVED",
+                      "independently_validated":  false,
+                      "commerce_verified":  false
+                  },
+    "note":  "Milestone 1 uses synthetic verifier fixtures for orchestration tests. It does not claim a new live Base payment."
+}

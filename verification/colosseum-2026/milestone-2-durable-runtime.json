@@ -1,0 +1,36 @@
+{
+    "schema":  "SAFEGATE_COLOSSEUM_VERIFICATION_V1",
+    "milestone":  "DURABLE_AGENT_COMMERCE_RUNTIME",
+    "branch":  "feature/colosseum-2026-base-agent-commerce",
+    "parent_commit":  "dfafa55caa43fbacd12b718f078649602e6048d6",
+    "runtime_contract":  {
+                             "chain_id":  8453,
+                             "asset":  "USDC",
+                             "persistence":  "SUPABASE_POSTGRES_RPC",
+                             "atomic_consume":  true,
+                             "replay_result":  "ALREADY_CONSUMED"
+                         },
+    "acceptance":  {
+                       "store_contract":  "PASS",
+                       "base_only_boundary":  "PASS",
+                       "request_id_boundary":  "PASS",
+                       "orchestrator_store_interface":  "PASS",
+                       "first_execution":  "PASS",
+                       "second_same_payment":  "ALREADY_CONSUMED",
+                       "signed_commerce_proof":  "PASS"
+                   },
+    "assurance":  {
+                      "level":  "OBSERVED",
+                      "independently_validated":  false,
+                      "commerce_verified":  false
+                  },
+    "security":  {
+                     "service_role_server_only":  true,
+                     "raw_secret_committed":  false,
+                     "wallet_used":  false,
+                     "payment_sent":  false,
+                     "production_database_used":  false,
+                     "production_database_mutated":  false
+                 },
+    "note":  "Integration test simulates the Supabase RPC response contract. Production migration has not been applied."
+}
