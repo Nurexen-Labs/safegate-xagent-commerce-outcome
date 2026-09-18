@@ -2,7 +2,7 @@
 
 **The assurance layer for programmable commerce.**
 
-Payment proves value moved. SafeGate verifies the evidence describing what happened next — and makes the strength of that evidence explicit.
+Payment proves money moved. SafeGate proves what actually happened next — and tells you how strong that proof is.
 
 SafeGate is designed for agent commerce, paid APIs, MCP tools, digital services, merchants, and platforms that need portable evidence after payment.
 
@@ -170,6 +170,101 @@ Payment verification alone does not prove fulfillment.
 SafeGate must not silently promote a provider claim into independent validation.
 
 `commerce_verified` should only become `true` when the configured assurance policy threshold has actually been satisfied.
+
+
+## Current engineering status — September 2026
+
+SafeGate is an agent-first, chain-agnostic and payment-rail-agnostic commerce assurance layer.
+
+The core remains deliberately separate from payment rails, wallets, custody and execution providers.
+
+Current lifecycle:
+
+    payment / execution evidence
+          ->
+    exact request binding
+          ->
+    durable single-consume
+          ->
+    replay protection
+          ->
+    outcome observation / attestation
+          ->
+    assurance classification
+          ->
+    signed portable CommerceProof
+
+### Execution Adapter Standard
+
+External execution and evidence providers are integrated around the SafeGate core through explicit adapters.
+
+The adapter layer preserves provenance and evidence strength instead of allowing a provider to elevate its own assurance level.
+
+Current engineering surfaces include:
+
+- SilentSwap execution and route evidence integration
+- 402Signal pre-payment and economic-binding evidence
+- Open Bounty third-party evidence adapter
+- ASP / XDC settlement evidence adapter
+- Base Mainnet agent-commerce lifecycle
+- KeeperHub Execution Adapter V1
+
+### Base Mainnet agent commerce
+
+SafeGate has completed a real Base Mainnet USDC agent-commerce lifecycle with:
+
+- exact payment-to-request binding
+- payment chronology validation
+- durable payment-intent state
+- single-consume replay protection
+- hosted service execution
+- observed outcome evidence
+- signed CommerceProof generation
+
+Payment verification and commerce assurance remain separate.
+
+A successful payment does not automatically produce `COMMERCE_VERIFIED`.
+
+### KeeperHub Execution Adapter V1
+
+KeeperHub is integrated as an external execution-provider adapter.
+
+Completed validation includes:
+
+- KeeperHub API authentication
+- Base Sepolia execution simulation
+- simulation normalization
+- request binding
+- execution binding
+- deterministic consume keys
+- replay rejection
+- signed CommerceProof generation and verification
+- fail-closed receipt handling
+- secret-leak checks
+- assurance no-elevation enforcement
+
+Important boundary:
+
+A KeeperHub simulation is not treated as execution proof.
+
+SafeGate requires a verified execution receipt before execution evidence can elevate assurance.
+
+### Assurance invariants
+
+SafeGate uses explicit evidence-strength semantics:
+
+`CLAIMED` — the provider or source asserts the outcome.
+
+`OBSERVED` — SafeGate observed the relevant execution or response evidence.
+
+`THIRD_PARTY_ATTESTED` — a separately identified third party contributed evidence under its own trust mechanism.
+
+`VALIDATED` — an independent validation mechanism verified the outcome.
+
+No caller, payment rail, execution provider or adapter can silently promote evidence into a stronger assurance class.
+
+`commerce_verified` becomes true only when the configured assurance policy is genuinely satisfied.
+
 
 ## What SafeGate is not
 
