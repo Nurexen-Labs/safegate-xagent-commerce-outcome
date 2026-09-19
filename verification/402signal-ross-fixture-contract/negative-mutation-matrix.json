@@ -1,0 +1,38 @@
+{
+  "schema": "SAFEGATE_402SIGNAL_NEGATIVE_MUTATION_MATRIX_V1",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "requestId",
+      "stage": "payment_binding",
+      "target": "paymentVerification.request_id",
+      "mutated_value": "SG-EVM-REQ-402SIGNAL-WRONG",
+      "expected_error": "PAYMENT_REQUEST_ID_MISMATCH",
+      "fail_open_allowed": false
+    },
+    {
+      "id": "amount",
+      "stage": "payment_binding",
+      "target": "paymentVerification.amount_base_units",
+      "mutated_value": "999",
+      "expected_error": "PAYMENT_AMOUNT_MISMATCH",
+      "fail_open_allowed": false
+    },
+    {
+      "id": "recipient",
+      "stage": "payment_binding",
+      "target": "paymentVerification.recipient",
+      "mutated_value": "0x2222222222222222222222222222222222222222",
+      "expected_error": "PAYMENT_RECIPIENT_MISMATCH",
+      "fail_open_allowed": false
+    },
+    {
+      "id": "expiry",
+      "stage": "expectation_creation",
+      "target": "verifiedAction.expires_at",
+      "mutated_value": 1789159000,
+      "expected_error": "ROUTE_EVIDENCE_EXPIRED",
+      "fail_open_allowed": false
+    }
+  ]
+}
